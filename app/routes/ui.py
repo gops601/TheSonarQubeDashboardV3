@@ -18,12 +18,19 @@ def dashboard():
         if userid not in grouped_projects:
             grouped_projects[userid] = []
             
+        github_url = None
+        if "_" in project_key:
+            parts = project_key.split("_", 1)
+            if len(parts) == 2:
+                github_url = f"https://github.com/{parts[0]}/{parts[1]}"
+
         grouped_projects[userid].append({
             'key': project_key,
             'name': proj_name,
             'original_name': original_name,
             'original_key': project_key,
-            'email': user_email
+            'email': user_email,
+            'github_url': github_url
         })
 
     users_count = len(grouped_projects)
@@ -52,11 +59,18 @@ def scan_history(project_key):
         if userid not in grouped_projects:
             grouped_projects[userid] = []
             
+        github_url = None
+        if "_" in p_key:
+            parts = p_key.split("_", 1)
+            if len(parts) == 2:
+                github_url = f"https://github.com/{parts[0]}/{parts[1]}"
+
         grouped_projects[userid].append({
             'key': p_key,
             'name': proj_name,
             'original_name': original_name,
             'original_key': p_key,
-            'email': user_email
+            'email': user_email,
+            'github_url': github_url
         })
     return render_template('history.html', project_key=project_key, grouped_projects=grouped_projects)

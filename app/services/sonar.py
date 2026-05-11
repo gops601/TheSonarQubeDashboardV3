@@ -9,10 +9,7 @@ def fetch_projects():
         return r.json().get("components", [])
     except Exception as e:
         print(f"Error fetching projects from {Config.SONAR_URL}: {e}")
-        try:
-            return r.json().get("components", [])
-        except:
-            return []
+        return []
 
 def fetch_user_email(login):
     try:
@@ -25,7 +22,8 @@ def fetch_user_email(login):
         if users:
             return users[0].get("email", login) or login
         return login
-    except:
+    except Exception as e:
+        print(f"Error fetching user email for {login}: {e}")
         return login
 
 def fetch_metrics(project_key):

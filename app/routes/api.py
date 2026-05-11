@@ -41,7 +41,7 @@ def api_report(project_key):
             "metrics": metrics,
             "quality": {
                 "status": quality,
-                "checked_at": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                "checked_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             },
             "ratings": ratings,
             "issues": issues,
@@ -63,7 +63,7 @@ def download_report(project_key):
             "metrics": metrics,
             "quality": {
                 "status": quality,
-                "checked_at": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                "checked_at": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             },
             "ratings": ratings,
             "issues": issues,
@@ -87,15 +87,17 @@ def api_metrics_history(project_key):
 
         conn = db_conn()
         cur = conn.cursor(dictionary=True)
-        cur.execute(
-            "SELECT scan_date, total_issues, code_smells, vulnerabilities, code_coverage "
-            "FROM scans WHERE project_name = %s ORDER BY scan_date DESC LIMIT 500",
-            (project_key,)
-        )
-        history = cur.fetchall()
-        cur.close()
-        conn.close()
-        return jsonify({"history": history})
+        try:
+            cur.execute(
+                "SELECT scan_date, total_issues, code_smells, vulnerabilities, code_coverage "
+                "FROM scans WHERE project_name = %s ORDER BY scan_date DESC LIMIT 500",
+                (project_key,)
+            )
+            history = cur.fetchall()
+            return jsonify({"history": history})
+        finally:
+            cur.close()
+            conn.close()
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -106,21 +108,23 @@ def api_all_scans():
     try:
         conn = db_conn()
         cur = conn.cursor(dictionary=True)
-        query = "SELECT scan_date, project_name, total_issues, code_smells, vulnerabilities, code_coverage FROM scans WHERE 1=1"
-        params = []
-        if start_date:
-            query += " AND DATE(scan_date) >= %s"
-            params.append(start_date)
-        if end_date:
-            query += " AND DATE(scan_date) <= %s"
-            params.append(end_date)
-        query += " ORDER BY scan_date DESC LIMIT 100"
-        
-        cur.execute(query, tuple(params))
-        scans = cur.fetchall()
-        cur.close()
-        conn.close()
-        return jsonify({"scans": scans})
+        try:
+            query = "SELECT scan_date, project_name, total_issues, code_smells, vulnerabilities, code_coverage FROM scans WHERE 1=1"
+            params = []
+            if start_date:
+                query += " AND DATE(scan_date) >= %s"
+                params.append(start_date)
+            if end_date:
+                query += " AND DATE(scan_date) <= %s"
+                params.append(end_date)
+            query += " ORDER BY scan_date DESC LIMIT 100"
+            
+            cur.execute(query, tuple(params))
+            scans = cur.fetchall()
+            return jsonify({"scans": scans})
+        finally:
+            cur.close()
+            conn.close()
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
