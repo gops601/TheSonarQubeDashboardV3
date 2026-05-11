@@ -9,7 +9,7 @@ The project was recently refactored to use the **Flask Application Factory** pat
 ```text
 /SonarAutomationv2
 ├── app/
-│   ├── __init__.py           # Application Factory: initializes Flask and registers blueprints
+│   ├── __init__.py           # Application Factory: initializes Flask
 │   ├── config.py             # Configuration settings (DB credentials, Sonar URL, API Tokens)
 │   ├── routes/               # Controllers
 │   │   ├── api.py            # Backend API routes for fetching/saving metrics and history
