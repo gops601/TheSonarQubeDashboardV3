@@ -2,8 +2,8 @@ import os
 
 class Config:
     # SONAR_URL = "http://sonarqube:9000"
-    SONAR_URL = os.environ.get('SONAR_URL', "http://localhost:9000")
-    TOKEN = os.environ.get('SONAR_TOKEN', "squ_326c582363f61d95e4e00ce365b974f09a254a79")
+    SONAR_URL = os.environ.get('SONAR_URL', "http://202.88.244.57:8086")
+    TOKEN = os.environ.get('SONAR_TOKEN', "squ_a59251231b8d79067dae75f6c65caf30a0b94d4a")
     
     DB = {
         # "host": "mysql-db",

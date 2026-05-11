@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, request, redirect, url_for
+from flask import Blueprint, jsonify, request, redirect, url_for, Response
+import json
 from datetime import datetime
 from app.services.sonar import fetch_metrics, fetch_quality, fetch_ratings, fetch_issues
 from app.services.database import save_data, db_conn
@@ -48,6 +49,34 @@ def api_report(project_key):
         })
     except Exception as e:
         print(f"Error in api_report: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route("/api/download_report/<project_key>", methods=["GET"])
+def download_report(project_key):
+    try:
+        metrics = fetch_metrics(project_key)
+        quality = fetch_quality(project_key)
+        ratings = fetch_ratings(project_key)
+        issues = fetch_issues(project_key)
+        
+        data = {
+            "metrics": metrics,
+            "quality": {
+                "status": quality,
+                "checked_at": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            },
+            "ratings": ratings,
+            "issues": issues,
+            "project_key": project_key
+        }
+        
+        json_data = json.dumps(data, indent=4)
+        return Response(
+            json_data,
+            mimetype="application/json",
+            headers={"Content-disposition": f"attachment; filename={project_key}_scan.json"}
+        )
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @api_bp.route("/api/metrics_history/<project_key>", methods=["GET"])
