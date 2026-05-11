@@ -138,7 +138,7 @@ jobs:
         if: steps.detect.outputs.type == 'react'
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          SONAR_HOST_URL: http://192.168.1.94:9002/
+          SONAR_HOST_URL: http://202.88.244.57:8086/
         with:
           args: >
             -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
@@ -154,7 +154,7 @@ jobs:
         if: steps.detect.outputs.type == 'python' || steps.detect.outputs.type == 'flask'
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          SONAR_HOST_URL: http://192.168.1.94:9002/
+          SONAR_HOST_URL: http://202.88.244.57:8086/
         with:
           args: >
             -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
@@ -170,7 +170,7 @@ jobs:
         if: steps.detect.outputs.type == 'unknown'
         uses: SonarSource/sonarqube-scan-action@v6
         env:
-          SONAR_HOST_URL: http://192.168.1.94:9002/
+          SONAR_HOST_URL: http://202.88.244.57:8086/
         with:
           args: >
             -Dsonar.projectKey=${{ github.repository_owner }}_${{ github.event.repository.name }}
